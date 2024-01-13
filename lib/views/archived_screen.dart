@@ -1,0 +1,30 @@
+// ignore_for_file: prefer_const_constructors, prefer_is_empty, prefer_const_literals_to_create_immutables
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_application/app_bloc/app_cubit.dart';
+import 'package:todo_application/app_bloc/app_states.dart';
+import 'package:todo_application/shared/components.dart';
+class ArchivedScreen extends StatelessWidget {
+  const ArchivedScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AppCubit,AppStates>(builder:(context,state)
+    {
+      var archived = AppCubit.get(context).archivedTasks;
+      return ConditionalBuilder(condition:archived.length > 0, builder:(context)=>ListView.separated(
+          physics:BouncingScrollPhysics(),
+          itemBuilder:(context,index)=>buildTaskItem(AppCubit.get(context).archivedTasks[index],context),
+          separatorBuilder:(context,index)=>myDivider(),
+          itemCount:AppCubit.get(context).archivedTasks.length),
+          fallback:(context)=>Center(
+          child:Column(
+          mainAxisAlignment:MainAxisAlignment.center,
+          children: [
+            Icon(Icons.menu,size:100,color:Colors.grey,),
+            Text('No Tasks Yet , Please Add Some Tasks',textAlign:TextAlign.center,style:TextStyle(fontSize:20.0,fontWeight:FontWeight.bold,color:Colors.grey),),
+          ],),
+      ));
+    }, listener:(context,state){});
+  }
+}
